@@ -1,0 +1,106 @@
+Farm Tracker
+
+
+Possible to create an import of inventory from google sheets so users can maintain values without haviing to enter and I not having to store the values each time
+    - would probably need to give them a template and a place to grab the url upon launching
+    - can I store the url in local storage?
+    - option to run without importing the data from google sheets
+
+Drag and drop characters - limit of how many? 5 toons at max to start (maybe instead of dragging, just a plus sign next to a name and pic?)
+    - still limit to 5 toons ? can you use grid to add columns dynamically?)
+once added, display their requirements by gear piece (toggleable between levels?) lets do from gear 13=>14
+have an inventory entry that allows user to enter current inventory (where to store and sign in to retrieve)
+for each piece have a button or question mark that will show where they are farmable
+
+
+page layout?
+local state will keep track of if items are in the places that are needed to retrieve data and display an empty box or the character
+
+left sidebar will show 
+    Toon pic
+    Toon name
+    + sign to add to list to calc values    
+    sidebar should scroll independently
+    sidebar values are sorted alphabetically (
+        const list = [
+        { color: 'white', size: 'XXL' },
+        { color: 'red', size: 'XL' },
+        { color: 'black', size: 'M' }
+        ]
+    )
+
+list.sort((a, b) => (a.color > b.color) ? 1 : -1)
+
+Main section initially displays the inventory grid
+    - adding a character adds a column with the needs for that character by item type and qty needed
+    - far right column shows either qty needed or a farm complete values
+    - aggregates as the values increase
+    - function should loop through all the inventory values and return a qty or zero, all are displayed for each character 
+        - (grid display should be auto columsn and can add as many as you want) may break layout if too big?
+
+Desired flow:
+	user goes to application
+	user imports google doc -  populate redux store with inventory data? this is unchanged over the course of the users use 
+	inventory numbers are udpated and displayed by type name and onHand values
+	user drags a character to the spot.... what happens?
+	1. Character stays in drag location
+	2. grid is populated with the names and quantities of REQUIRED gear per lvl
+	3. Inventory needs to be displayed at this point with the matching items displayed (only display the items needed for the displayed toons?)
+	4. optional column that shows a variance between needed on OH values
+	5. link to the farm location
+
+after each inventory entry, dispatch the itemqty update to inventory tab
+	Logins would preclude the need to do this
+	valiate that numbers were entered before dispatching the action 
+
+Global state needs to have inventory 
+Inventory:  { 
+	itemKey: {name: displayName, onHandQty: qty}
+	}
+
+
+Items: {
+	type: { catalyst: (do i need item type here? i could handle this with the layout with grid span row start and end, column start and end.  Sort the values by type)
+		 {itemKey: {
+			name: name, 
+			farmLocation: [ nodes (i.e. Cosmic 6-9, include node energy cost?) ],
+			itemArt: urlLocation,
+			charactersUsing: [ characterIds],
+			prices: {warCredit: #credits, gold:goldAmt, raidCredit:raidCreditAmt}
+            type: (catalyst, etc) - display by type, then name according to how it is laid out
+	
+			add a groupling for item type? (i.e. catalyst,unique, tech, etc?) 
+			}
+	                Unique: { {itemKey :{
+			 ...	
+			}
+	}
+
+Doesn't need to be in state, this is a reference structure
+Characters: {	
+	
+	characterId: {
+		 items: { itemKey: { neededQty: qty, key: itemKey?}
+	                         characterArt: urlLocation,
+
+		}
+	}
+
+
+
+
+    ToDos:
+    Build the inventory object model
+    Build the import into redux
+    Build the character model 
+    
+
+    Redux State 
+    
+
+    inventory:{} - populated with google doc on values
+        - actions: update values (display box should have ability to enter new values vs. reimporting)
+    characters:{} - all characters with requirements
+    items:{} - static values
+    selectedCharacters:{} - array of character IDs to use for displaying values
+        - actions: add, remove character 
